@@ -1,7 +1,9 @@
+import datetime
 import sys
 import locale
 import importlib
 import os
+
 from typing import Generator, Iterable
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect, QDir,
@@ -22,6 +24,8 @@ sys.path.extend(['UI', 'Plugins'])
 
 from UI.mainwindow import MainWindow
 from tag_dialog import TagDialog
+from key_dialog import KeyDialog
+
 
 class NewWidget(QMainWindow):
     def __init__(self):
@@ -29,6 +33,12 @@ class NewWidget(QMainWindow):
         self.ui = MainWindow()
         self.ui.setupUi(self)
         self.init_signals()
+
+        self.is_auth = False
+        self.user_data = ('unauthenticated user', datetime.datetime.now())
+
+        self.ui.pluginsMenu.setEnabled(False)
+        self.ui.toolsMenu.setEnabled(False)
 
         self.filename = ''
         self.is_new = True
@@ -41,16 +51,11 @@ class NewWidget(QMainWindow):
         self.write_mode = [self.ui.plainTextEdit.appendPlainText]
         self.set_write_mode()
 
-        self.PATH_WITH_PLUGINS = 'Plugins'
+        self.PATHS_WITH_PLUGINS = ['Plugins']
         self.REQUIRED_FIELDS = ['NAME', 'VERSION', 'AUTHOR', 'TITLE', 'CAPTION', 'get_description']
-        files = self.get_py_files()
-        modules = self.get_modules(files)
-        self.plugins = list(self.check_plugins(modules))
-        for plugin in self.plugins:
-            d = plugin.get_description()
-            self.ui.pluginsMenu.addAction(d['pluginsAction'])
-            for key, action in d['toolsActions'].items():
-                self.ui.toolsMenu.addAction(action)
+        self.plugins = []
+
+        self.load_plugins()
 
     def file_dialog_config(self):
         file_filter = 'HTML (*.html)'
@@ -75,6 +80,8 @@ class NewWidget(QMainWindow):
 
         self.ui.insertSettingsAction.changed.connect(self.insert_changed)
         self.ui.appendSettingsAction.changed.connect(self.append_changed)
+
+        self.ui.authSettingsAction.triggered.connect(self.get_auth)
 
     def load_page(self, filename: str):
         self.load_text(filename)
@@ -151,20 +158,30 @@ class NewWidget(QMainWindow):
     def insert_tag(self):
         self.write_mode[0](TagDialog.get_tag())
 
+    def load_plugins(self):
+        files = self.get_py_files()
+        modules = self.get_modules(files)
+        self.plugins = [*self.check_plugins(modules)]
+        for plugin in self.plugins:
+            d = plugin.get_description()
+            self.ui.pluginsMenu.addAction(d['pluginsAction'])
+            for key, action in d['toolsActions'].items():
+                self.ui.toolsMenu.addAction(action)
 
-    def get_py_files(self) -> Generator[str, None, None]:
+    def get_py_files(self) -> Generator[tuple[str], None, None]:
         """Получаем все файлы из папки"""
-        for file in os.listdir(self.PATH_WITH_PLUGINS):
-            # Отбрасываем все файлы, которые заканчиваются не на .py
-            if file[-3:] != '.py':
-                continue
-            yield file[:-3]
+        for path in self.PATHS_WITH_PLUGINS:
+            for file in os.listdir(path):
+                # Отбрасываем все файлы, которые заканчиваются не на .py
+                if file[-3:] != '.py':
+                    continue
+                yield path, file[:-3]
 
-    def get_modules(self, files: Iterable[str]) -> Generator[object, None, None]:
+    def get_modules(self, files: Iterable[tuple[str]]) -> Generator[object, None, None]:
         """Получаем модули из файлов"""
         for file in files:
-            module = __import__(f'{self.PATH_WITH_PLUGINS}.{file}')
-            module = getattr(module, file)
+            module = __import__(f'{file[0]}.{file[1]}')
+            module = getattr(module, file[1])
             # Если в модуле нет класса Plugin, пропускаем
             if not hasattr(module, 'Plugin'):
                 print(file, 'Модуль не имеет класса Plugin')
@@ -179,6 +196,21 @@ class NewWidget(QMainWindow):
                 print(module, 'Модуль не имеет нужных полей')
                 continue
             yield module
+
+    def get_auth(self):
+        if not self.is_auth:
+            if user_drive := KeyDialog.get_drive():
+                self.user_data = user_drive
+                self.is_auth = True
+                if self.user_data[1] == 1:
+                    self.ui.toolsMenu.setEnabled(True)
+                    self.ui.pluginsMenu.setEnabled(True)
+        else:
+            mbx = QMessageBox(self)
+            mbx.setWindowTitle('Данные пользователя')
+            mbx.setText(f'Пользователь {self.user_data[0]}\n'
+                        f'Ключ действителен до {self.user_data[1].strftime("%X %x")}')
+            mbx.show()
 
 
 if __name__ == "__main__":

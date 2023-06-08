@@ -71,11 +71,12 @@
     <property name="title">
      <string>Настройки</string>
     </property>
+    <addaction name="authSettingsAction"/>
+    <addaction name="separator"/>
     <addaction name="insertSettingsAction"/>
     <addaction name="appendSettingsAction"/>
     <addaction name="separator"/>
     <addaction name="configSettingsAction"/>
-    <addaction name="authSettingsAction"/>
    </widget>
    <widget class="QMenu" name="menu">
     <property name="title">
