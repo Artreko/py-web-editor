@@ -12,10 +12,10 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QCursor, QFont, QFontDatabase, QGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
-    QTransform)
+    QTransform, QTextCursor)
 from PySide6.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMenu,
     QMenuBar, QPlainTextEdit, QSizePolicy, QStatusBar,
-    QWidget, QFileDialog, QMessageBox, QDialog)
+    QWidget, QFileDialog, QMessageBox, QDialog, QToolBar)
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebEngineCore import QWebEnginePage
 from tag_dialog import TagDialog
@@ -34,11 +34,11 @@ class NewWidget(QMainWindow):
         self.ui.setupUi(self)
         self.init_signals()
 
-        self.is_auth = False
+        self.is_auth = True
         self.user_data = ('unauthenticated user', datetime.datetime.now())
 
-        self.ui.pluginsMenu.setEnabled(False)
-        self.ui.toolsMenu.setEnabled(False)
+        self.ui.pluginsMenu.setEnabled(self.is_auth)
+        self.ui.toolsMenu.setEnabled(self.is_auth)
 
         self.filename = ''
         self.is_new = True
@@ -48,7 +48,7 @@ class NewWidget(QMainWindow):
 
         self.load_page('index.html')
 
-        self.write_mode = [self.ui.plainTextEdit.appendPlainText]
+        self.write_mode = self.ui.plainTextEdit.insertPlainText
         self.set_write_mode()
 
         self.PATHS_WITH_PLUGINS = ['Plugins']
@@ -56,6 +56,23 @@ class NewWidget(QMainWindow):
         self.plugins = []
 
         self.load_plugins()
+
+        # self.ui.plainTextEdit.find()
+
+        self.fileToolBar = QToolBar(self)
+        for action in self.ui.fileMenu.actions()[:-1]:
+            self.fileToolBar.addAction(action)
+        self.addToolBar(self.fileToolBar)
+        self.editToolBar = QToolBar(self)
+        for action in self.ui.editMenu.actions():
+            if action.icon():
+                self.editToolBar.addAction(action)
+        self.addToolBar(self.editToolBar)
+        self.toolsToolBar = QToolBar(self)
+        for action in self.ui.toolsMenu.actions():
+            if action.icon():
+                self.toolsToolBar.addAction(action)
+        self.addToolBar(self.toolsToolBar)
 
     def file_dialog_config(self):
         file_filter = 'HTML (*.html)'
@@ -82,6 +99,9 @@ class NewWidget(QMainWindow):
         self.ui.appendSettingsAction.changed.connect(self.append_changed)
 
         self.ui.authSettingsAction.triggered.connect(self.get_auth)
+        self.ui.viewSettingsAction.changed.connect(self.view_setting_changed)
+
+        self.ui.ction.triggered.connect(self.move_cursor_to_end)
 
     def load_page(self, filename: str):
         self.load_text(filename)
@@ -89,7 +109,7 @@ class NewWidget(QMainWindow):
 
     def update_page(self):
         html = self.ui.plainTextEdit.toPlainText()
-        self.ui.web.setHtml(html)
+        self.ui.web.setHtml(html, baseUrl='C:/')
 
     def load_text(self, filename: str):
         with open(filename, encoding='utf-8') as f:
@@ -99,8 +119,8 @@ class NewWidget(QMainWindow):
     def open_file(self):
         if self.file_open_dialog.exec():
             filenames = self.file_open_dialog.selectedFiles()
-            filename = filenames[0]
-            self.load_page(filename)
+            self.filename = filenames[0]
+            self.load_page(self.filename)
             self.is_new = False
     
     def create_file(self): 
@@ -145,18 +165,16 @@ class NewWidget(QMainWindow):
         self.ui.appendSettingsAction.setChecked(not self.ui.insertSettingsAction.isChecked())
 
     def set_write_mode(self):
-        write_mode = self.ui.plainTextEdit.appendPlainText \
+        self.write_mode = self.insert_to_end \
             if self.ui.appendSettingsAction.isChecked() \
             else self.ui.plainTextEdit.insertPlainText
-        self.write_mode.pop()
-        self.write_mode.append(write_mode)
 
     def append_changed(self):
         self.ui.insertSettingsAction.setChecked(not self.ui.appendSettingsAction.isChecked())
         self.set_write_mode()
 
     def insert_tag(self):
-        self.write_mode[0](TagDialog.get_tag())
+        self.write_mode(TagDialog.get_tag())
 
     def load_plugins(self):
         files = self.get_py_files()
@@ -173,12 +191,17 @@ class NewWidget(QMainWindow):
         for path in self.PATHS_WITH_PLUGINS:
             for file in os.listdir(path):
                 # Отбрасываем все файлы, которые заканчиваются не на .py
+                if file.find('.') == -1:
+                    yield path, file
+                    continue
                 if file[-3:] != '.py':
                     continue
                 yield path, file[:-3]
 
+
     def get_modules(self, files: Iterable[tuple[str]]) -> Generator[object, None, None]:
         """Получаем модули из файлов"""
+        # print(*files)
         for file in files:
             module = __import__(f'{file[0]}.{file[1]}')
             module = getattr(module, file[1])
@@ -186,7 +209,7 @@ class NewWidget(QMainWindow):
             if not hasattr(module, 'Plugin'):
                 print(file, 'Модуль не имеет класса Plugin')
                 continue
-            yield getattr(module, 'Plugin')(self.write_mode)
+            yield getattr(module, 'Plugin')(self)
 
     def check_plugins(self, modules: Iterable[object]):
         """Проверяем, чтоб в модуле были нужные переменные и функции"""
@@ -202,9 +225,8 @@ class NewWidget(QMainWindow):
             if user_drive := KeyDialog.get_drive():
                 self.user_data = user_drive
                 self.is_auth = True
-                if self.user_data[1] == 1:
-                    self.ui.toolsMenu.setEnabled(True)
-                    self.ui.pluginsMenu.setEnabled(True)
+                self.ui.toolsMenu.setEnabled(True)
+                self.ui.pluginsMenu.setEnabled(True)
         else:
             mbx = QMessageBox(self)
             mbx.setWindowTitle('Данные пользователя')
@@ -212,6 +234,21 @@ class NewWidget(QMainWindow):
                         f'Ключ действителен до {self.user_data[1].strftime("%X %x")}')
             mbx.show()
 
+    def view_setting_changed(self):
+        if self.ui.viewSettingsAction.isChecked():
+            self.ui.web.show()
+        else:
+            self.ui.web.hide()
+
+    def move_cursor_to_end(self):
+        self.ui.plainTextEdit.find('</body>')
+        self.ui.plainTextEdit.moveCursor(QTextCursor.MoveOperation.StartOfBlock)
+        self.ui.plainTextEdit.textCursor().insertBlock()
+        self.ui.plainTextEdit.moveCursor(QTextCursor.MoveOperation.PreviousBlock)
+
+    def insert_to_end(self, text):
+        self.move_cursor_to_end()
+        self.ui.plainTextEdit.insertPlainText(text)
 
 if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, '')
@@ -219,6 +256,6 @@ if __name__ == "__main__":
 
     widget = NewWidget()
     widget.resize(800, 600)
-    widget.show()
+    widget.showMaximized()
 
     sys.exit(app.exec())

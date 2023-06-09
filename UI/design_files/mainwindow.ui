@@ -22,7 +22,17 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QPlainTextEdit" name="plainTextEdit"/>
+     <widget class="QPlainTextEdit" name="plainTextEdit">
+      <property name="font">
+       <font>
+        <family>Consolas</family>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="cursor" stdset="0">
+       <cursorShape>IBeamCursor</cursorShape>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -36,8 +46,16 @@
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
+    <property name="geometry">
+     <rect>
+      <x>221</x>
+      <y>191</y>
+      <width>162</width>
+      <height>174</height>
+     </rect>
+    </property>
     <property name="title">
-     <string>Файл</string>
+     <string>&amp;Файл</string>
     </property>
     <addaction name="openFileAction"/>
     <addaction name="createFileAction"/>
@@ -54,18 +72,6 @@
     <property name="title">
      <string>Плагины</string>
     </property>
-    <widget class="QMenu" name="pluginsLoadMenu">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="title">
-      <string>Загрузить</string>
-     </property>
-     <addaction name="reloadPluginsAction"/>
-     <addaction name="loadPluginsAction"/>
-    </widget>
-    <addaction name="pluginsLoadMenu"/>
-    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="settingsMenu">
     <property name="title">
@@ -76,17 +82,21 @@
     <addaction name="insertSettingsAction"/>
     <addaction name="appendSettingsAction"/>
     <addaction name="separator"/>
+    <addaction name="viewSettingsAction"/>
+    <addaction name="separator"/>
     <addaction name="configSettingsAction"/>
    </widget>
-   <widget class="QMenu" name="menu">
+   <widget class="QMenu" name="editMenu">
     <property name="title">
      <string>Редактор</string>
     </property>
     <addaction name="updateEditAction"/>
     <addaction name="tagEditAction"/>
+    <addaction name="fontEditAction"/>
+    <addaction name="symEditAction"/>
    </widget>
    <addaction name="fileMenu"/>
-   <addaction name="menu"/>
+   <addaction name="editMenu"/>
    <addaction name="toolsMenu"/>
    <addaction name="pluginsMenu"/>
    <addaction name="settingsMenu"/>
@@ -176,6 +186,27 @@
   <action name="authSettingsAction">
    <property name="text">
     <string>Авторизация</string>
+   </property>
+  </action>
+  <action name="fontEditAction">
+   <property name="text">
+    <string>Шрифт</string>
+   </property>
+  </action>
+  <action name="symEditAction">
+   <property name="text">
+    <string>Символы</string>
+   </property>
+  </action>
+  <action name="viewSettingsAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Предпросмотр</string>
    </property>
   </action>
  </widget>
