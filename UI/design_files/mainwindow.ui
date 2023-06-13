@@ -94,6 +94,9 @@
     <addaction name="tagEditAction"/>
     <addaction name="fontEditAction"/>
     <addaction name="symEditAction"/>
+    <addaction name="underlineEditAction"/>
+    <addaction name="italicEditAction"/>
+    <addaction name="boldEditAction"/>
    </widget>
    <addaction name="fileMenu"/>
    <addaction name="editMenu"/>
@@ -207,6 +210,21 @@
    </property>
    <property name="text">
     <string>Предпросмотр</string>
+   </property>
+  </action>
+  <action name="underlineEditAction">
+   <property name="text">
+    <string>Подчеркивание</string>
+   </property>
+  </action>
+  <action name="italicEditAction">
+   <property name="text">
+    <string>Курсив</string>
+   </property>
+  </action>
+  <action name="boldEditAction">
+   <property name="text">
+    <string>Жирный</string>
    </property>
   </action>
  </widget>

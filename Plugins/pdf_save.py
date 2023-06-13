@@ -14,7 +14,6 @@ class Plugin:
     CAPTION = 'Сохранить в PDF'
 
     def __init__(self, main_window):
-
         self.main_window = main_window
         self.savePdfPluginsAction = QAction()
         self.savePdfPluginsAction.setObjectName('createTablePluginsAction')
@@ -34,7 +33,9 @@ class Plugin:
         self.savePdfToolsAction.setVisible(check)
 
     def save_pdf(self):
+        self.main_window.update_page()
         file, _ = QFileDialog.getSaveFileName(parent=self.main_window,
+                                              caption='Сохранить в pdf',
                                               dir=os.path.join(QDir.homePath(), 'Documents'),
                                               filter="PDF (*.pdf)")
         if file:
@@ -44,7 +45,7 @@ class Plugin:
         d = {
             'pluginsAction': self.savePdfPluginsAction,
             'toolsActions': {
-                'createTableToolsAction': self.savePdfToolsAction
+                'savePdfToolsAction': self.savePdfToolsAction
             }
         }
         return d

@@ -20,6 +20,7 @@ from PySide6.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMenu,
     QWidget, QFileDialog, QMessageBox, QDialog, QTableWidgetItem)
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebEngineCore import QWebEnginePage
+import qrc_resources
 
 
 class KeyDialog(QDialog):
@@ -27,7 +28,7 @@ class KeyDialog(QDialog):
         super().__init__()
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
-
+        self.setWindowIcon(QIcon.fromTheme(':key.png'))
         self.ui.searchButton.clicked.connect(self.search_button_clicked)
         self.ui.reSearchButton.clicked.connect(self.search_button_clicked)
         self.ui.diskChooseButton.clicked.connect(self.disc_choose_button_clicked)

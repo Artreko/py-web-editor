@@ -39,6 +39,10 @@ class MainWindow(Ui_MainWindow):
         self.fontEditAction.setIcon(QIcon(':font.png'))
         self.tagEditAction.setIcon(QIcon(':tag.png'))
         self.updateEditAction.setIcon(QIcon(':update.png'))
+        self.boldEditAction.setIcon(QIcon(':bold.png'))
+        self.underlineEditAction.setIcon(QIcon(':underline.png'))
+        self.italicEditAction.setIcon(QIcon(':italic.png'))
+
 
     def retranslateUi(self, MainWindow):
         super().retranslateUi(MainWindow)

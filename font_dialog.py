@@ -1,5 +1,3 @@
-from UI.tag_form_ui import Ui_tagDialog
-
 import sys
 import locale
 import importlib
@@ -15,16 +13,29 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMenu,
     QMenuBar, QPlainTextEdit, QSizePolicy, QStatusBar,
-    QWidget, QFileDialog, QMessageBox, QDialog)
+    QWidget, QFileDialog, QMessageBox, QDialog, QFormLayout)
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebEngineCore import QWebEnginePage
+from UI.font_form_ui import Ui_FontDialog
+import qrc_resources
+from color_button import ColorButton
+class FontDialogUI(Ui_FontDialog):
+    def setupUi(self, FontDialog):
+        super().setupUi(FontDialog)
+        FontDialog.setWindowIcon(QIcon.fromTheme(':font.png'))
+        self.colorButton = ColorButton(color='#000000')
+        self.formLayout.setWidget(3, QFormLayout.ItemRole.SpanningRole, self.colorButton)
+
+    def retranslateUi(self, linkDialog):
+        super().retranslateUi(linkDialog)
 
 
-class TagDialog(QDialog):
+class FontDialog(QDialog):
     def __init__(self, parent):
         super().__init__()
-        self.ui = Ui_tagDialog()
+        self.ui = FontDialogUI()
         self.ui.setupUi(self)
+        self.setWindowIcon(QIcon.fromTheme(':font.png'))
         self.parent = parent
         self.value = ''
         if parent.ui.insertSettingsAction.isChecked():
@@ -37,19 +48,13 @@ class TagDialog(QDialog):
         self.close()
 
     @staticmethod
-    def get_tag(parent=None):
-        tag_dialog = TagDialog(parent)
-        if tag_dialog.exec():
-            tag = tag_dialog.ui.tagEdit.text().strip()
-            check = tag_dialog.ui.pairTagButton.isChecked()
-            class_ = tag_dialog.ui.classEdit.text()
-            id_ = tag_dialog.ui.classEdit.text()
-            result = f'<{tag}'
-            if id_:
-                result += f' id="{id_}"'
-            if class_:
-                result += f' class="{class_}"'
-            result += '>' + tag_dialog.value
-            if check:
-                result += f'</{tag}>'
+    def get_font(parent=None):
+        d = FontDialog(parent)
+        if d.exec():
+            result = '<span '
+            result += f'style="' \
+                      f'font: {d.ui.sizeSpin.value()}px ' \
+                      f'\'{d.ui.fontBox.currentFont().family()}\'; ' \
+                      f'color: {d.ui.colorButton.color()};"'
+            result += '>' + d.value + '</span>'
             return result

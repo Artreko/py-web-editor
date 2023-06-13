@@ -1,5 +1,4 @@
-from UI.tag_form_ui import Ui_tagDialog
-
+from .insert_link_ui import Ui_linkDialog
 import sys
 import locale
 import importlib
@@ -18,38 +17,34 @@ from PySide6.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMenu,
     QWidget, QFileDialog, QMessageBox, QDialog)
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebEngineCore import QWebEnginePage
+class LinkDialogUI(Ui_linkDialog):
+    def setupUi(self, linkDialog):
+        super().setupUi(linkDialog)
 
+    def retranslateUi(self, linkDialog):
+        super().retranslateUi(linkDialog)
 
-class TagDialog(QDialog):
+class LinkDialog(QDialog):
     def __init__(self, parent):
         super().__init__()
-        self.ui = Ui_tagDialog()
+        self.ui = LinkDialogUI()
         self.ui.setupUi(self)
         self.parent = parent
         self.value = ''
         if parent.ui.insertSettingsAction.isChecked():
             if parent.ui.plainTextEdit.textCursor().hasSelection():
-                self.value = parent.ui.plainTextEdit.textCursor().selectedText()
+                self.ui.valueEdit.setText(parent.ui.plainTextEdit.textCursor().selectedText())
         self.ui.acceptButton.clicked.connect(self.accept_button_clicked)
 
     def accept_button_clicked(self):
         self.accept()
         self.close()
 
-    @staticmethod
-    def get_tag(parent=None):
-        tag_dialog = TagDialog(parent)
-        if tag_dialog.exec():
-            tag = tag_dialog.ui.tagEdit.text().strip()
-            check = tag_dialog.ui.pairTagButton.isChecked()
-            class_ = tag_dialog.ui.classEdit.text()
-            id_ = tag_dialog.ui.classEdit.text()
-            result = f'<{tag}'
-            if id_:
-                result += f' id="{id_}"'
-            if class_:
-                result += f' class="{class_}"'
-            result += '>' + tag_dialog.value
-            if check:
-                result += f'</{tag}>'
+    def get_link(parent=None):
+        dialog = LinkDialog(parent)
+        if dialog.exec():
+            result = f'<a href="{dialog.ui.linkEdit.text()}"'
+            if dialog.ui.blankCheck.isChecked():
+                result += ' target="blank_"'
+            result += '>' + dialog.ui.valueEdit.text() + '</a>'
             return result

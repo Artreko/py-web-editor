@@ -3,19 +3,24 @@
 <!--<file alias="filename.png">resources/filename.png</file>-->
     <file alias="bold.png">resources/bold.png</file>
     <file alias="close.png">resources/close.png</file>
+    <file alias="del.png">resources/del.png</file>
     <file alias="font.png">resources/font.png</file>
     <file alias="insert-image.png">resources/insert-image.png</file>
     <file alias="insert-link.png">resources/insert-link.png</file>
     <file alias="insert-list.png">resources/insert-list.png</file>
     <file alias="insert-table.png">resources/insert-table.png</file>
     <file alias="italic.png">resources/italic.png</file>
+    <file alias="key.png">resources/key.png</file>
     <file alias="new-file.png">resources/new-file.png</file>
     <file alias="open-file.png">resources/open-file.png</file>
     <file alias="pdf-2.png">resources/pdf-2.png</file>
     <file alias="save-as.png">resources/save-as.png</file>
     <file alias="save.png">resources/save.png</file>
-    <file alias="tag.png">resources/tag.png</file>
     <file alias="settings.png">resources/settings.png</file>
+    <file alias="sub.png">resources/sub.png</file>
+    <file alias="sup.png">resources/sup.png</file>
+    <file alias="tag.png">resources/tag.png</file>
+    <file alias="html.png">resources/html.png</file>
     <file alias="underline.png">resources/underline.png</file>
     <file alias="update.png">resources/update.png</file>
 </qresource>

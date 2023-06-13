@@ -25,6 +25,7 @@ class Ui_tagDialog(object):
             tagDialog.setObjectName(u"tagDialog")
         tagDialog.resize(449, 164)
         tagDialog.setModal(True)
+        tagDialog.setWindowIcon(QIcon.fromTheme(':tag.png'))
         self.formLayout = QFormLayout(tagDialog)
         self.formLayout.setObjectName(u"formLayout")
         self.label = QLabel(tagDialog)

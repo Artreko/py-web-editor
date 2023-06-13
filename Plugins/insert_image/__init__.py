@@ -35,7 +35,8 @@ class Plugin:
         self.insertImageToolsAction.setVisible(check)
 
     def create_table(self):
-        self.main_window.write_mode(InsertImageDialog.get_img())
+        if img := InsertImageDialog.get_img():
+            self.main_window.write_mode(img)
 
     def get_description(self):
         d = {

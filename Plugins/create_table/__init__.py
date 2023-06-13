@@ -41,7 +41,8 @@ class Plugin:
         self.createTableToolsAction.setVisible(check)
 
     def create_table(self):
-        self.main_window.write_mode(CreateTableDialog.get_table())
+        if table := CreateTableDialog.get_table():
+            self.main_window.write_mode(table)
 
     def get_description(self):
         d = {
