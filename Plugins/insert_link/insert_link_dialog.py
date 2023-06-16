@@ -24,11 +24,13 @@ class LinkDialogUI(Ui_linkDialog):
     def retranslateUi(self, linkDialog):
         super().retranslateUi(linkDialog)
 
+
 class LinkDialog(QDialog):
     def __init__(self, parent):
         super().__init__()
         self.ui = LinkDialogUI()
         self.ui.setupUi(self)
+        self.setWindowIcon(QIcon(':insert-link.png'))
         self.parent = parent
         self.value = ''
         if parent.ui.insertSettingsAction.isChecked():

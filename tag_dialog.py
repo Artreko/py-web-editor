@@ -43,7 +43,7 @@ class TagDialog(QDialog):
             tag = tag_dialog.ui.tagEdit.text().strip()
             check = tag_dialog.ui.pairTagButton.isChecked()
             class_ = tag_dialog.ui.classEdit.text()
-            id_ = tag_dialog.ui.classEdit.text()
+            id_ = tag_dialog.ui.idEdit.text()
             result = f'<{tag}'
             if id_:
                 result += f' id="{id_}"'

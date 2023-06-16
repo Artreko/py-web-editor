@@ -4,6 +4,7 @@ from .create_table_ui import Ui_TableDialog
 from color_button import ColorButton
 import qrc_resources
 
+
 class CreateTableUI(Ui_TableDialog):
     def setupUi(self, TableDialog):
         super().setupUi(TableDialog)
@@ -59,9 +60,9 @@ class CreateTableDialog(QDialog):
         if dialog.exec():
             rows = dialog.ui.rowSpin.value()
             cols = dialog.ui.colSpin.value()
-            result = '<style>\n'
             if dialog.ui.borderCheck.isChecked():
-                result += f'table, th, td {"{"} \n  :{dialog.ui.borderWidth.value()}px ' \
+                result = '<style>\n'
+                result += f'table, th, td {"{"} \n border: {dialog.ui.borderWidth.value()}px ' \
                           f'{dialog.ui.borderType.currentText()} ' \
                           f'{dialog.ui.border_color.color()}'
                 if dialog.ui.collapceCheck.isChecked():

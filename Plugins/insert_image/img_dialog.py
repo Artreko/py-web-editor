@@ -1,17 +1,22 @@
 from PySide6.QtWidgets import (QDialog, QFileDialog)
+from PySide6.QtGui import QIcon
 from PySide6.QtCore import QDir
 from .img_dialog_ui import Ui_ImageDialog
 import os
-
+import qrc_resources
 
 class InsertImageDialog(QDialog):
     def __init__(self):
         super().__init__()
         self.ui = Ui_ImageDialog()
         self.ui.setupUi(self)
-
+        self.setWindowIcon(QIcon(':insert-image.png'))
         self.ui.acceptButton.clicked.connect(self.accept_button_clicked)
         self.ui.searchButton.clicked.connect(self.search_button_clicked)
+        self.ui.label_5.setVisible(False)
+        self.ui.label_2.setVisible(False)
+        self.ui.classEdit.setVisible(False)
+
 
     def accept_button_clicked(self):
         self.accept()

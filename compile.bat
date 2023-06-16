@@ -1,0 +1,43 @@
+pyinstaller --noconfirm --log-level=WARN ^
+    --noconsole ^
+    --onedir ^
+    --workpath="." ^
+    --icon="./icon.ico" ^
+    --name PyWebEditor ^
+    --paths="Plugins" ^
+    --paths="UI" ^
+    --add-data="resources\bold.png;recources" ^
+    --add-data="resources\close.png;recources" ^
+    --add-data="resources\del.png;recources" ^
+    --add-data="resources\font.png;recources" ^
+    --add-data="resources\html.png;recources" ^
+    --add-data="resources\insert-image.png;recources" ^
+    --add-data="resources\insert-link.png;recources" ^
+    --add-data="resources\insert-list.png;recources" ^
+    --add-data="resources\insert-table.png;recources" ^
+    --add-data="resources\italic.png;recources" ^
+    --add-data="resources\key.png;recources" ^
+    --add-data="resources\new-file.png;recources" ^
+    --add-data="resources\open-file.png;recources" ^
+    --add-data="resources\pdf-2.png;recources" ^
+    --add-data="resources\save-as.png;recources" ^
+    --add-data="resources\save.png;recources" ^
+    --add-data="resources\settings.png;recources" ^
+    --add-data="resources\sub.png;recources" ^
+    --add-data="resources\sup.png;recources" ^
+    --add-data="resources\tag.png;recources" ^
+    --add-data="resources\underline.png;recources" ^
+    --add-data="resources\update.png;recources" ^
+    --add-data="index.html;." ^
+    --add-data="Plugins\__init__.py;Plugins" ^
+    --add-data="Plugins\pdf_save.py;Plugins" ^
+    --add-data="Plugins/create_table/__init__.py;Plugins/create_table" ^
+    --add-data="Plugins/create_table/create_table_dialog.py;Plugins/create_table" ^
+    --add-data="Plugins/create_table/create_table_ui.py;Plugins/create_table" ^
+    --add-data="Plugins/insert_image/__init__.py;Plugins/insert_image" ^
+    --add-data="Plugins/insert_image/img_dialog.py;Plugins/insert_image" ^
+    --add-data="Plugins/insert_image/img_dialog_ui.py;Plugins/insert_image" ^
+    --add-data="Plugins/insert_link/__init__.py;Plugins/insert_link" ^
+    --add-data="Plugins/insert_link/insert_link_dialog.py;Plugins/insert_link" ^
+    --add-data="Plugins/insert_link/insert_link_ui.py;Plugins/insert_link" ^
+    main.py

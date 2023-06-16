@@ -24,7 +24,7 @@ class FontDialogUI(Ui_FontDialog):
         super().setupUi(FontDialog)
         FontDialog.setWindowIcon(QIcon.fromTheme(':font.png'))
         self.colorButton = ColorButton(color='#000000')
-        self.formLayout.setWidget(3, QFormLayout.ItemRole.SpanningRole, self.colorButton)
+        self.formLayout.setWidget(2, QFormLayout.ItemRole.SpanningRole, self.colorButton)
 
     def retranslateUi(self, linkDialog):
         super().retranslateUi(linkDialog)
